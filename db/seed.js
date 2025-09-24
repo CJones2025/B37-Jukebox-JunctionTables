@@ -56,7 +56,6 @@ async function seed() {
     );
   }
 
-  // Insert playlists (at least 10)
   const playlists = [
     {
       name: "Thrash Metal Classics",
@@ -107,7 +106,6 @@ async function seed() {
     );
   }
 
-  // Insert playlists_tracks relationships (at least 15)
   const playlistTracks = [
     // Thrash Metal Classics (Playlist 1)
     { playlist_id: 1, track_id: 7 }, // Peace Sells - Megadeth

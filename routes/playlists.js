@@ -3,7 +3,6 @@ import db from "#db/client";
 
 const router = express.Router();
 
-// GET /playlists - sends array of all playlists
 router.get("/", async (req, res, next) => {
   try {
     const result = await db.query("SELECT * FROM playlists ORDER BY id");
@@ -13,10 +12,8 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// POST /playlists - creates a new empty playlist
 router.post("/", async (req, res, next) => {
   try {
-    // Check if request body exists
     if (!req.body) {
       return res.status(400).json({ error: "Request body is required" });
     }
@@ -40,12 +37,10 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-// GET /playlists/:id - sends playlist specified by id
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Validate that id is a number
     if (isNaN(id) || !Number.isInteger(Number(id))) {
       return res.status(400).json({ error: "Invalid playlist ID" });
     }
@@ -64,17 +59,14 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-// GET /playlists/:id/tracks - sends all tracks in the playlist
 router.get("/:id/tracks", async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Validate that id is a number
     if (isNaN(id) || !Number.isInteger(Number(id))) {
       return res.status(400).json({ error: "Invalid playlist ID" });
     }
 
-    // First check if playlist exists
     const playlistCheck = await db.query(
       "SELECT id FROM playlists WHERE id = $1",
       [id]
@@ -100,17 +92,14 @@ router.get("/:id/tracks", async (req, res, next) => {
   }
 });
 
-// POST /playlists/:id/tracks - adds a new track to the playlist
 router.post("/:id/tracks", async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Validate that id is a number
     if (isNaN(id) || !Number.isInteger(Number(id))) {
       return res.status(400).json({ error: "Invalid playlist ID" });
     }
 
-    // Check if request body exists
     if (!req.body) {
       return res.status(400).json({ error: "Request body is required" });
     }
@@ -121,12 +110,10 @@ router.post("/:id/tracks", async (req, res, next) => {
       return res.status(400).json({ error: "trackId is required" });
     }
 
-    // Validate that trackId is a number
     if (isNaN(trackId) || !Number.isInteger(Number(trackId))) {
       return res.status(400).json({ error: "Invalid track ID" });
     }
 
-    // Check if playlist exists
     const playlistCheck = await db.query(
       "SELECT id FROM playlists WHERE id = $1",
       [id]
@@ -135,7 +122,6 @@ router.post("/:id/tracks", async (req, res, next) => {
       return res.status(404).json({ error: "Playlist not found" });
     }
 
-    // Check if track exists
     const trackCheck = await db.query("SELECT id FROM tracks WHERE id = $1", [
       trackId,
     ]);
@@ -143,7 +129,6 @@ router.post("/:id/tracks", async (req, res, next) => {
       return res.status(400).json({ error: "Track not found" });
     }
 
-    // Add track to playlist
     const result = await db.query(
       "INSERT INTO playlists_tracks (playlist_id, track_id) VALUES ($1, $2) RETURNING *",
       [id, trackId]

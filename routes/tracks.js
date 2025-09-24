@@ -3,7 +3,6 @@ import db from "#db/client";
 
 const router = express.Router();
 
-// GET /tracks - sends array of all tracks
 router.get("/", async (req, res, next) => {
   try {
     const result = await db.query("SELECT * FROM tracks ORDER BY id");
@@ -13,12 +12,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// GET /tracks/:id - sends track specified by id
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    // Validate that id is a number
     if (isNaN(id) || !Number.isInteger(Number(id))) {
       return res.status(400).json({ error: "Invalid track ID" });
     }
